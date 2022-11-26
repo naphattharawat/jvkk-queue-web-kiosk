@@ -34,6 +34,7 @@ export class MainComponent implements OnInit {
   notifyUrl: string;
   kioskId: any;
   isPrinting = false;
+  authenCode: any = "";
 
   cardCid: any;
   cardFullName: any;
@@ -63,7 +64,7 @@ export class MainComponent implements OnInit {
   btnGetCard = false;
   @ViewChild(CountdownComponent) counter: CountdownComponent;
 
-  constructor(
+  constructor (
     private route: ActivatedRoute,
     private alertService: AlertService,
     private kioskService: KioskService,
@@ -366,7 +367,7 @@ export class MainComponent implements OnInit {
     this.rightName = '';
     this.rightStartDate = '';
     this.rightHospital = '';
-
+    this.authenCode = '';
 
     this.remed = null;
 
@@ -435,6 +436,7 @@ export class MainComponent implements OnInit {
       title: this.his.title,
       birthDate: this.his.engBirthDate,
       sex: this.his.sex,
+      authenCode: this.authenCode
     };
     try {
       const rs: any = await this.kioskService.register(this.token, data);
@@ -608,6 +610,7 @@ export class MainComponent implements OnInit {
         const authenNHSO: any = await this.nhsoService.getAuthenCode(nhsoInfo.body.pid, nhsoInfo.body.correlationId, this.his.hn, '12272');
         if (authenNHSO.status === 200) {
           try {
+            this.authenCode = authenNHSO.body.claimCode;
             await this.nhsoService.save({
               claimCode: authenNHSO.body.claimCode,
               pid: authenNHSO.body.pid,
